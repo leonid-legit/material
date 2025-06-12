@@ -1,16 +1,32 @@
-import React, { createContext, useContext, useState } from 'react';
+import { useCheckout } from './CheckoutProvider';
+import { CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
 
-const CheckoutContext = createContext(null);
+function CheckoutForm() {
+    const { promoCode } = useCheckout();
+    const stripe = useStripe();
+    const elements = useElements();
 
-export const CheckoutProvider = ({ children }) => {
-    const [cardDetails, setCardDetails] = useState({});
-    const [promoCode, setPromoCode] = useState('');
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        const cardElement = elements.getElement(CardElement);
+
+        const { token, error } = await stripe.createToken(cardElement);
+        if (error) {
+            console.error('Payment Error:', error);
+            return;
+        }
+
+        await fetch('/api/checkout/submit', {
+            method: 'POST',
+            body: JSON.stringify({ token: token.id, promoCode }),
+            headers: { 'Content-Type': 'application/json' },
+        });
+    };
 
     return (
-        <CheckoutContext.Provider value={{ cardDetails, setCardDetails, promoCode, setPromoCode }}>
-            {children}
-        </CheckoutContext.Provider>
+        <form onSubmit={handleSubmit}>
+            <CardElement />
+            <button type="submit" disabled={!stripe}>Pay Now</button>
+        </form>
     );
-};
-
-export const useCheckout = () => useContext(CheckoutContext);
+}
