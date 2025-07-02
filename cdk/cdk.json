@@ -1,0 +1,3 @@
+{
+  "app": "npx ts-node s3_bucket_stack.ts"
+}
