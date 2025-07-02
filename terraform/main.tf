@@ -3,6 +3,6 @@ provider "aws" {
 }
 
 resource "aws_s3_bucket" "example" {
-  bucket = "terraform-example-bucket"
+  bucket = "terraform-example-bucket-1"
   acl    = "private"
 }
