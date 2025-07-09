@@ -22,4 +22,16 @@ router.post('/register', (req, res) => {
     res.status(201).json({ message: `User ${name} registered successfully.` });
 });
 
+/**
+ * @route DELETE /api/v1/users/:id
+ * @desc Delete a user by ID
+ * @access Public
+ */
+router.delete('/:id', (req, res) => {
+    const userId = req.params.id;
+    // Dummy delete logic
+    res.json({ message: `User with ID ${userId} deleted.` });
+});
+
+
 module.exports = router;
