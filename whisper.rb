@@ -16,7 +16,7 @@ begin
   )
 
   if response["text"]
-    puts "Transcription:\n#{response['text']}"
+    puts "Transcription:\n#{response['texat']}"
   else
     puts "Error: #{response}"
   end
