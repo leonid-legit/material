@@ -1,39 +1,57 @@
 package com.example.bookapi.controller;
 
 import com.example.bookapi.model.Book;
+import com.example.bookapi.service.BookService;
+import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/books")
 public class BookController {
 
-    private final List<Book> books = new ArrayList<>();
-
-    public BookController() {
-        books.add(new Book(1, "Effective Java", "Joshua Bloch"));
-        books.add(new Book(2, "Clean Code", "Robert C. Martin"));
-    }
+    @Autowired
+    private BookService bookService;
 
     @GetMapping
     public List<Book> getBooks() {
-        return books;
+        return bookService.getAllBooks();
     }
 
     @PostMapping
-    public Book addBook(@RequestBody Book book) {
-        book.setId(books.size() + 1);
-        books.add(book);
-        return book;
+    public ResponseEntity<Book> addBook(@Valid @RequestBody Book book) {
+        Book created = bookService.addBook(book);
+        return new ResponseEntity<>(created, HttpStatus.CREATED);
     }
 
     @GetMapping("/{id}")
-    public Book getBook(@PathVariable int id) {
-        return books.stream()
-                    .filter(b -> b.getId() == id)
-                    .findFirst()
-                    .orElse(null);
+    public ResponseEntity<Book> getBook(@PathVariable Integer id) {
+        Book book = bookService.getBookById(id);
+        if (book == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return ResponseEntity.ok(book);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Book> updateBook(@PathVariable Integer id, @Valid @RequestBody Book book) {
+        Book updated = bookService.updateBook(id, book);
+        if (updated == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return ResponseEntity.ok(updated);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteBook(@PathVariable Integer id) {
+        boolean deleted = bookService.deleteBook(id);
+        if (!deleted) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
