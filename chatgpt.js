@@ -70,6 +70,14 @@ const openai = new OpenAI({
         });
         console.log("Moderation flagged:", moderation.results[0].flagged);
 
+        // 9. Chat with GPT-4o-mini
+        const gpt4omini = await openai.chat.completions.create({
+            model: "gpt-4o-mini",
+            messages: [{ role: "user", content: "Explain AI to a child." }]
+        });
+        console.log("GPT-4o-mini:", gpt4omini.choices[0].message.content);
+
+
     } catch (error) {
         console.error("Error:", error);
     }
