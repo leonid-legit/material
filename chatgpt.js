@@ -38,15 +38,6 @@ const openai = new OpenAI({
         });
         console.log("Whisper transcription:", transcript.text);
 
-        // 5. DALL·E (Image Generation)
-        const image = await openai.images.generate({
-            model: "dall-e-3",
-            prompt: "A futuristic city skyline at night",
-            n: 1,
-            size: "1024x1024"
-        });
-        console.log("Image URL:", image.data[0].url);
-
         // 6. Text-to-Speech (TTS)
         const speech = await openai.audio.speech.create({
             model: "tts-1",
