@@ -72,7 +72,7 @@ const openai = new OpenAI({
 
         // 9. Chat with GPT-4o-mini
         const gpt4omini = await openai.chat.completions.create({
-            model: "gpt-4o-mini",
+            model: "o4-mini-2025-04-16",
             messages: [{ role: "user", content: "Explain AI to a child." }]
         });
         console.log("GPT-4o-mini:", gpt4omini.choices[0].message.content);
